@@ -61,7 +61,7 @@
           setLocation,
           cancelLocation,
           { enableHighAccuracy: false,
-            timeout:10000
+            timeout:5000
           }
         );
       }
