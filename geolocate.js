@@ -1,3 +1,6 @@
+// Crushpath geolocate jQuery component
+// Requires Google Maps API jQuery
+
 (function ($) {
   $.geolocate = function(options) {
     this.locationCanceled = false;
@@ -8,7 +11,13 @@
       onCancel: function() {},
       latituteInput: '',
       longitudeInput: '',
-      formatedAddressInput: ''
+      formatedAddressInput: '',
+
+      cityInput: '',
+      stateInput: '',
+      addressInput: '',
+      countryInout: '',
+      postalCodeInput: ''
     };
 
     var settings = $.extend(defaultOptions, options);
@@ -33,7 +42,59 @@
         settings.onComplete.call(this);
         if (status == google.maps.GeocoderStatus.OK) {
           if (results[1]) {
-            $(settings.formatedAddressInput).val((results[1].formatted_address));
+            var components = results[1].address_components;
+            var parsed_components = {};
+
+            // first set the one field to rule them all
+            $(settings.formatedAddressInput).val((components.formatted_address));
+            
+            // go through components and find different pieces needed
+            $.each(components, function(i, component) {
+              if (~$.inArray('country',component.types) && !parsed_components.country) {
+                parsed_components.country = component.long_name;
+              }
+              if (~$.inArray('locality',component.types) && !parsed_components.city) {
+                parsed_components.city = component.long_name;
+              }
+              if (~$.inArray('administrative_area_level_1',component.types) && !parsed_components.state) {
+                parsed_components.state = component.long_name;
+              }
+              if (~$.inArray('route',component.types) && !parsed_components.route) {
+                parsed_components.route = component.long_name;
+              }
+              if (~$.inArray('street_number',component.types) && !parsed_components.street_number) {
+                parsed_components.street_number = component.long_name;
+              }
+              if (~$.inArray('postal_code',component.types) && !parsed_components.postal_code) {
+                parsed_components.postal_code = component.long_name;
+              }
+            });
+
+            // combine route and street_number if possible
+            if (parsed_components.street_number) {
+              parsed_components.address = parsed_components.street_number;
+            }
+            if (parsed_components.route) {
+              parsed_components.address = parsed_components.street_number + " " + parsed_components.route;
+            }
+
+            // set individual fields per options
+            if (parsed_components.address) {
+              $(settings.addressInput).val((parsed_components.address));
+            }
+            if (parsed_components.city) {
+              $(settings.cityInput).val((parsed_components.city));
+            }
+            if (parsed_components.state) {
+              $(settings.stateInput).val((parsed_components.state));
+            }
+            if (parsed_components.country) {
+              $(settings.countryInput).val((parsed_components.country));
+            }
+            if (parsed_components.postal_code) {
+              $(settings.postalCodeInput).val((parsed_components.postal_code));
+            }
+
             return;
           }
         }
@@ -61,7 +122,7 @@
           setLocation,
           cancelLocation,
           { enableHighAccuracy: false,
-            timeout:5000
+            timeout:10000
           }
         );
       }
