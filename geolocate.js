@@ -46,7 +46,7 @@
             var parsed_components = {};
 
             // first set the one field to rule them all
-            $(settings.formatedAddressInput).val((components.formatted_address));
+            $(settings.formatedAddressInput).val((results[1].formatted_address));
             
             // go through components and find different pieces needed
             $.each(components, function(i, component) {
