@@ -17,7 +17,7 @@
       cityInput: '',
       stateInput: '',
       addressInput: '',
-      countryInout: '',
+      countryInput: '',
       postalCodeInput: ''
     };
 
