@@ -123,8 +123,8 @@
               if (status == google.maps.GeocoderStatus.OK) {
                   var firstResults = results[0];
                   if (firstResults && firstResults.geometry && firstResults.geometry.location) {
-                      $(settings.latituteInput).val(firstResults.geometry.location.lat);
-                      $(settings.longitudeInput).val(firstResults.geometry.location.lng);
+                      $(settings.latituteInput).val(firstResults.geometry.location.lat());
+                      $(settings.longitudeInput).val(firstResults.geometry.location.lng());
                   }
               }
           });
