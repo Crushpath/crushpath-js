@@ -119,7 +119,7 @@
 
       if (settings.addressToReverseLookup && settings.addressToReverseLookup.length > 0){
           var geocoder = new google.maps.Geocoder();
-          geocoder.geocode({'address': settings.addressToReverseLookup, 'sensor' : false}, function(results, status) {
+          geocoder.geocode({'address': settings.addressToReverseLookup}, function(results, status) {
               if (status == google.maps.GeocoderStatus.OK) {
                   var firstResults = results[0];
                   if (firstResults && firstResults.geometry && firstResults.geometry.location) {
