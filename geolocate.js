@@ -9,6 +9,7 @@
       onLoading: function() {},
       onComplete: function() {},
       onCancel: function() {},
+      addressToReverseLookup: null,
       latituteInput: '',
       longitudeInput: '',
       formatedAddressInput: '',
@@ -47,7 +48,7 @@
 
             // first set the one field to rule them all
             $(settings.formatedAddressInput).val((results[1].formatted_address));
-            
+
             // go through components and find different pieces needed
             $.each(components, function(i, component) {
               if (~$.inArray('country',component.types) && !parsed_components.country) {
@@ -116,7 +117,19 @@
         return;
       }
 
-      if (navigator.geolocation) {
+      if (settings.addressToReverseLookup && settings.addressToReverseLookup.length > 0){
+          var geocoder = new google.maps.Geocoder();
+          geocoder.geocode({'address': settings.addressToReverseLookup, 'sensor' : false}, function(results, status) {
+              if (status == google.maps.GeocoderStatus.OK) {
+                  var firstResults = results[0];
+                  if (firstResults && firstResults.geometry && firstResults.geometry.location) {
+                      $(settings.latituteInput).val(firstResults.geometry.location.lat);
+                      $(settings.longitudeInput).val(firstResults.geometry.location.lng);
+                  }
+              }
+          });
+
+      } else if (navigator.geolocation) {
         settings.onLoading.call(this);
         navigator.geolocation.getCurrentPosition(
           setLocation,
