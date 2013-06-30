@@ -9,6 +9,7 @@
       onLoading: function() {},
       onComplete: function() {},
       onCancel: function() {},
+      addressToReverseLookup: null,
       latituteInput: '',
       longitudeInput: '',
       formatedAddressInput: '',
@@ -116,7 +117,19 @@
         return;
       }
 
-      if (navigator.geolocation) {
+      if (settings.addressToLookup && settings.addressToLookup.length > 0){
+          var geocoder = new google.maps.Geocoder();
+          geocoder.geocode({'address': settings.addressToLookup, 'sensor' : false}, function(results, status) {
+              if (status == google.maps.GeocoderStatus.OK) {
+                  var firstResults = results[0];
+                  if (firstResults && firstResults.geometry && firstResults.geometry.location) {
+                      $(settings.latituteInput).val(firstResults.geometry.location.lat);
+                      $(settings.longitudeInput).val(firstResults.geometry.location.lng);
+                  }
+              }
+          });
+
+      } else if (navigator.geolocation) {
         settings.onLoading.call(this);
         navigator.geolocation.getCurrentPosition(
           setLocation,
