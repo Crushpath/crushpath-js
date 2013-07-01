@@ -52,7 +52,7 @@
             // go through components and find different pieces needed
             $.each(components, function(i, component) {
               if (~$.inArray('country',component.types) && !parsed_components.country) {
-                parsed_components.country = component.long_name;
+                parsed_components.country = component.short_name;
               }
               if (~$.inArray('locality',component.types) && !parsed_components.city) {
                 parsed_components.city = component.long_name;
