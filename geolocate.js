@@ -118,6 +118,7 @@
       }
 
       if (settings.addressToReverseLookup && settings.addressToReverseLookup.length > 0){
+          settings.onLoading.call(this);
           var geocoder = new google.maps.Geocoder();
           geocoder.geocode({'address': settings.addressToReverseLookup}, function(results, status) {
               if (status == google.maps.GeocoderStatus.OK) {
@@ -125,6 +126,7 @@
                   if (firstResults && firstResults.geometry && firstResults.geometry.location) {
                       $(settings.latituteInput).val(firstResults.geometry.location.lat());
                       $(settings.longitudeInput).val(firstResults.geometry.location.lng());
+                      settings.onComplete.call(this);
                   }
               }
           });
