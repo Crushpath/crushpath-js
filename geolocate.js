@@ -39,8 +39,7 @@
 
       var geocoder = new google.maps.Geocoder();
       geocoder.geocode({'latLng': pos}, function(results, status) {
-
-        settings.onComplete.call(this);
+        
         if (status == google.maps.GeocoderStatus.OK) {
           if (results[1]) {
             var components = results[1].address_components;
@@ -95,10 +94,10 @@
             if (parsed_components.postal_code) {
               $(settings.postalCodeInput).val((parsed_components.postal_code));
             }
-
-            return;
           }
         }
+
+        settings.onComplete.call(this);
       });
     }
 
