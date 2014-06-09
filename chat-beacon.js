@@ -4,18 +4,28 @@
 $(function() {
   var chatFrameLoaded = false;
   var chatFrameOpened = false;
+  var unreadCount = 0;
 
-  function updateUnreadCount(count) {
-    if (count > 0) {
-      $(".js-chat-count").html(count).show();
-    } else {
-      $(".js-chat-count").hide();
-    }
+  ////////
+  // set up initial beacon value from bootstrap
+  unreadCount = chatBeaconBootstrap.unreadReplies;
+  updateUnreadBadge();
+
+  ////////
+  // listen to pusher for new rpelies
+  try {
+    Pusher.bind("new_reply", function() {
+      if (!chatFrameOpened) {
+        unreadCount++;
+        updateUnreadBadge();
+      }
+    });
+  } catch(e) {
+    // unable to bind to Pusher!
+    // catch so we do not blow up page for broken badge...
   }
 
-  // set up initial beacon value from bootstrap
-  updateUnreadCount(chatBeaconBootstrap.unreadReplies);
-
+  ////////
   // click handler on chat bubble
   $(".js-show-chat").click(function() {
     if (chatFrameOpened) {
@@ -25,6 +35,8 @@ $(function() {
     } else {
       $(".js-chat-iframe-container").fadeIn(125, function() {
         chatFrameOpened = true;
+        unreadCount = 0;      // set "new" to 0 when tool opened
+        updateUnreadBadge();
       });
 
       if (!chatFrameLoaded) {
@@ -34,5 +46,15 @@ $(function() {
       }
     }
   });
+
+  ////////
+  // Update counter badge in DOM
+  function updateUnreadBadge() {
+    if (unreadCount > 0) {
+      $(".js-chat-count").html(unreadCount).show();
+    } else {
+      $(".js-chat-count").hide();
+    }
+  }
 
 });
