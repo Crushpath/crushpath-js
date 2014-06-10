@@ -25,7 +25,13 @@ $(function() {
 
   ////////
   // click handler on chat bubble
-  $(".js-show-chat").click(chatFrameOpened ? closeChatFrame : openChatFrame);
+  $(".js-show-chat").click(function() {
+    if (chatFrameOpened) {
+      closeChatFrame();
+    } else {
+      openChatFrame();
+    }
+  });
 
   ////////
   // listen to window messages to adjust frame
@@ -52,6 +58,7 @@ $(function() {
   ////////
   // Close dropdown
   function closeChatFrame() {
+
     $(".js-chat-iframe-container").fadeOut(125, function() {
       chatFrameOpened = false;
     });
