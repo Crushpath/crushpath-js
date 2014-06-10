@@ -1,5 +1,5 @@
 // JS for showing/hiding the chat iframe and updating the beacon #
-// vanilla jQuery
+// vanilla jQuery for minimal dependency because shared between apps
 
 $(function() {
   var chatFrameLoaded = false;
@@ -15,10 +15,8 @@ $(function() {
   // listen to pusher for new rpelies
   try {
     Pusher.bind("new_reply", function() {
-      if (!chatFrameOpened) {
-        unreadCount++;
-        updateUnreadBadge();
-      }
+      // TODO update the number appropriately
+
     });
   } catch(e) {
     // unable to bind to Pusher!
@@ -30,11 +28,25 @@ $(function() {
   $(".js-show-chat").click(chatFrameOpened ? closeChatFrame : openChatFrame);
 
   ////////
-  // listen to window message to close chat frame
+  // listen to window messages to adjust frame
   window.addEventListener("message", function(e) {
-    if (e.data === 'closeChatDropdown') {
-      closeChatFrame();
+    if (!e.data) {
+      return;
     }
+
+    // close frame
+    if (e.data === 'closeChatDropdown' && chatFrameOpened) {
+      closeChatFrame();
+      return;
+    }
+
+    // adjust height with message like changeHeight:123
+    if (e.data.match(/^changeHeight/)) {
+      $(".js-chat-iframe-container").animate({
+        height: e.data.match(/[0-9]+/) + "px"
+      },125);
+    }
+
   }, false);
 
   ////////
