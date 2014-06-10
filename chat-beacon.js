@@ -8,15 +8,17 @@ $(function() {
 
   ////////
   // set up initial beacon value from bootstrap
-  unreadCount = chatBeaconBootstrap.unreadReplies;
+  unreadCount = chatBeaconBootstrap.unreadReplies.length;
   updateUnreadBadge();
 
   ////////
   // listen to pusher for new rpelies
   try {
-    Pusher.bind("new_reply", function() {
-      // TODO update the number appropriately
-
+    Pusher.bind("unread_questions_update", function(data) {
+      try {
+        unreadCount = data.length;
+        updateUnreadBadge();
+      } catch(e) { }
     });
   } catch(e) {
     // unable to bind to Pusher!
