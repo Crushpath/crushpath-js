@@ -2,6 +2,10 @@
 // vanilla jQuery for minimal dependency because shared between apps
 
 $(function() {
+  if (typeof chatBeaconBootstrap === 'undefined' || !chatBeaconBootstrap) {
+    return;
+  }
+
   var chatFrameLoaded = false;
   var chatFrameOpened = false;
   var unreadCount = 0;
