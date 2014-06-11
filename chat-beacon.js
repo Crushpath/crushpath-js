@@ -17,17 +17,27 @@ $(function() {
 
   ////////
   // listen to pusher for new rpelies
-  try {
-    Pusher.bind("unread_questions_update", function(data) {
-      try {
-        unreadCount = data.length;
-        updateUnreadBadge();
-      } catch(e) { }
-    });
-  } catch(e) {
-    // unable to bind to Pusher!
-    // catch so we do not blow up page for broken badge...
+  var bindInterval = false;
+  var bindAttempts = 0;
+  function attemptBind() {
+    bindAttempts++;
+    try {
+      userPusherChannel.bind("unread_questions_update", function(data) {
+        try {
+          unreadCount = data.object.items.length;
+          updateUnreadBadge();
+        } catch(e) { }
+      });
+      clearInterval(bindInterval);
+    } catch(e) {
+      if (bindAttempts > 20) {
+        // not going to bind...
+        clearInterval(bindInterval);
+      }
+    }
   }
+  // keep trying to bind while pusher sets up
+  bindInterval = setInterval(attemptBind, 250);
 
   ////////
   // click handler on chat bubble
