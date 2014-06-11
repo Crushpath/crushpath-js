@@ -8,17 +8,20 @@ $(function() {
 
   ////////
   // set up initial beacon value from bootstrap
-  unreadCount = chatBeaconBootstrap.unreadReplies;
+  unreadCount = chatBeaconBootstrap.unreadReplies.length;
   updateUnreadBadge();
 
   ////////
   // listen to pusher for new rpelies
   try {
-    Pusher.bind("new_reply", function() {
-      // TODO update the number appropriately
-
+    window.userPusherChannel.bind("unread_questions_update", function(data) {
+      try {
+        unreadCount = data.object.items.length;
+        updateUnreadBadge();
+      } catch(e) { }
     });
   } catch(e) {
+    alert('unable to bind!');
     // unable to bind to Pusher!
     // catch so we do not blow up page for broken badge...
   }
