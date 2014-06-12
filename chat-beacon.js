@@ -1,8 +1,16 @@
 // JS for showing/hiding the chat iframe and updating the beacon #
 // vanilla jQuery for minimal dependency because shared between apps
 
+/*global $, jQuery*/
+/*global chatBeaconBootstrap, haml*/
+/*global userPusherChannel, haml*/
+
+function exists(varRef) {
+  ((typeof varRef !== 'undefined') && (varRef))
+}
+
 $(function() {
-  if (typeof chatBeaconBootstrap === 'undefined' || !chatBeaconBootstrap) {
+  if (!exists(chatBeaconBootstrap)) {
     return;
   }
 
@@ -10,13 +18,19 @@ $(function() {
   var chatFrameOpened = false;
   var unreadCount = 0;
 
-  ////////
-  // set up initial beacon value from bootstrap
-  unreadCount = chatBeaconBootstrap.unreadReplies.length;
-  updateUnreadBadge();
+  if (exists(chatBeaconBootstrap.streamAppUnreadURL)){
+    $.getJSON(chatBeaconBootstrap.streamAppUnreadURL, function (result) {
+      //response data are now in the result variable
+      unreadCount = result.count;
+      updateUnreadBadge();
+    });
+  } else if (exists(chatBeaconBootstrap.unreadReplies)) {
+    unreadCount = chatBeaconBootstrap.unreadReplies.length;
+    updateUnreadBadge();
+  }
 
   ////////
-  // listen to pusher for new rpelies
+  // listen to pusher for new replies
   var bindInterval = false;
   var bindAttempts = 0;
   function attemptBind() {
@@ -85,7 +99,6 @@ $(function() {
   function openChatFrame() {
     $(".js-chat-iframe-container").fadeIn(125, function() {
       chatFrameOpened = true;
-      unreadCount = 0;      // set "new" to 0 when tool opened
       updateUnreadBadge();
     });
 
