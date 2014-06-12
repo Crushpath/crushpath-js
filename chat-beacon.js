@@ -1,8 +1,19 @@
 // JS for showing/hiding the chat iframe and updating the beacon #
 // vanilla jQuery for minimal dependency because shared between apps
 
+/*global $, jQuery*/
+/*global chatBeaconBootstrap, haml*/
+/*global userPusherChannel, haml*/
+
+function exists(varRef) {
+  'use strict';
+  var retVal = ((typeof(varRef) !== 'undefined') && varRef);
+  return retVal;
+}
+
 $(function() {
-  if (typeof chatBeaconBootstrap === 'undefined' || !chatBeaconBootstrap) {
+  'use strict';
+  if (!exists(chatBeaconBootstrap)) {
     return;
   }
 
@@ -11,16 +22,55 @@ $(function() {
   var unreadCount = 0;
 
   ////////
-  // set up initial beacon value from bootstrap
-  unreadCount = chatBeaconBootstrap.unreadReplies.length;
-  updateUnreadBadge();
+  // Update counter badge in DOM
+  function updateUnreadBadge() {
+    if (unreadCount > 0) {
+      $(".js-chat-count").html(unreadCount).show();
+    } else {
+      $(".js-chat-count").hide();
+    }
+  }
 
   ////////
-  // listen to pusher for new rpelies
+  // Close dropdown
+  function closeChatFrame() {
+    $(".js-chat-iframe-container").fadeOut(125, function() {
+      chatFrameOpened = false;
+    });
+  }
+
+////////
+// Open dropdown
+  function openChatFrame() {
+    $(".js-chat-iframe-container").fadeIn(125, function() {
+      chatFrameOpened = true;
+      updateUnreadBadge();
+    });
+
+    if (!chatFrameLoaded) {
+      $(".js-chat-iframe-container iframe").attr('src',chatBeaconBootstrap.streamAppURL)[0].onload = function() {
+        chatFrameLoaded = true;
+      };
+    }
+  }
+
+  if (exists(chatBeaconBootstrap.streamAppUnreadURL)){
+    $.getJSON(chatBeaconBootstrap.streamAppUnreadURL, function (result) {
+      //response data are now in the result variable
+      unreadCount = result.count;
+      updateUnreadBadge();
+    });
+  } else if (exists(chatBeaconBootstrap.unreadReplies)) {
+    unreadCount = chatBeaconBootstrap.unreadReplies.length;
+    updateUnreadBadge();
+  }
+
+  ////////
+  // listen to pusher for new replies
   var bindInterval = false;
   var bindAttempts = 0;
   function attemptBind() {
-    bindAttempts++;
+    bindAttempts += 1;
     try {
       userPusherChannel.bind("unread_questions_update", function(data) {
         try {
@@ -70,40 +120,4 @@ $(function() {
     }
 
   }, false);
-
-  ////////
-  // Close dropdown
-  function closeChatFrame() {
-
-    $(".js-chat-iframe-container").fadeOut(125, function() {
-      chatFrameOpened = false;
-    });
-  }
-
-  ////////
-  // Open dropdown
-  function openChatFrame() {
-    $(".js-chat-iframe-container").fadeIn(125, function() {
-      chatFrameOpened = true;
-      unreadCount = 0;      // set "new" to 0 when tool opened
-      updateUnreadBadge();
-    });
-
-    if (!chatFrameLoaded) {
-      $(".js-chat-iframe-container iframe").attr('src',chatBeaconBootstrap.streamAppURL)[0].onload = function() {
-        chatFrameLoaded = true;
-      };
-    }
-  }
-
-  ////////
-  // Update counter badge in DOM
-  function updateUnreadBadge() {
-    if (unreadCount > 0) {
-      $(".js-chat-count").html(unreadCount).show();
-    } else {
-      $(".js-chat-count").hide();
-    }
-  }
-
 });
