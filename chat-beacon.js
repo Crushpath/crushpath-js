@@ -6,10 +6,13 @@
 /*global userPusherChannel, haml*/
 
 function exists(varRef) {
-  ((typeof varRef !== 'undefined') && (varRef))
+  'use strict';
+  var retVal = ((typeof(varRef) !== 'undefined') && varRef);
+  return retVal;
 }
 
 $(function() {
+  'use strict';
   if (!exists(chatBeaconBootstrap)) {
     return;
   }
@@ -17,6 +20,39 @@ $(function() {
   var chatFrameLoaded = false;
   var chatFrameOpened = false;
   var unreadCount = 0;
+
+  ////////
+  // Update counter badge in DOM
+  function updateUnreadBadge() {
+    if (unreadCount > 0) {
+      $(".js-chat-count").html(unreadCount).show();
+    } else {
+      $(".js-chat-count").hide();
+    }
+  }
+
+  ////////
+  // Close dropdown
+  function closeChatFrame() {
+    $(".js-chat-iframe-container").fadeOut(125, function() {
+      chatFrameOpened = false;
+    });
+  }
+
+////////
+// Open dropdown
+  function openChatFrame() {
+    $(".js-chat-iframe-container").fadeIn(125, function() {
+      chatFrameOpened = true;
+      updateUnreadBadge();
+    });
+
+    if (!chatFrameLoaded) {
+      $(".js-chat-iframe-container iframe").attr('src',chatBeaconBootstrap.streamAppURL)[0].onload = function() {
+        chatFrameLoaded = true;
+      };
+    }
+  }
 
   if (exists(chatBeaconBootstrap.streamAppUnreadURL)){
     $.getJSON(chatBeaconBootstrap.streamAppUnreadURL, function (result) {
@@ -34,7 +70,7 @@ $(function() {
   var bindInterval = false;
   var bindAttempts = 0;
   function attemptBind() {
-    bindAttempts++;
+    bindAttempts += 1;
     try {
       userPusherChannel.bind("unread_questions_update", function(data) {
         try {
@@ -84,39 +120,4 @@ $(function() {
     }
 
   }, false);
-
-  ////////
-  // Close dropdown
-  function closeChatFrame() {
-
-    $(".js-chat-iframe-container").fadeOut(125, function() {
-      chatFrameOpened = false;
-    });
-  }
-
-  ////////
-  // Open dropdown
-  function openChatFrame() {
-    $(".js-chat-iframe-container").fadeIn(125, function() {
-      chatFrameOpened = true;
-      updateUnreadBadge();
-    });
-
-    if (!chatFrameLoaded) {
-      $(".js-chat-iframe-container iframe").attr('src',chatBeaconBootstrap.streamAppURL)[0].onload = function() {
-        chatFrameLoaded = true;
-      };
-    }
-  }
-
-  ////////
-  // Update counter badge in DOM
-  function updateUnreadBadge() {
-    if (unreadCount > 0) {
-      $(".js-chat-count").html(unreadCount).show();
-    } else {
-      $(".js-chat-count").hide();
-    }
-  }
-
 });
