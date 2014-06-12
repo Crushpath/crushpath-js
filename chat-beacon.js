@@ -59,6 +59,8 @@ $(function() {
       //response data are now in the result variable
       unreadCount = result.count;
       updateUnreadBadge();
+    }).error(function(xhrObj) {
+      xhrObj.silenceError = true;
     });
   } else if (exists(chatBeaconBootstrap.unreadReplies)) {
     unreadCount = chatBeaconBootstrap.unreadReplies.length;
