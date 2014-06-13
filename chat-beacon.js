@@ -6,13 +6,11 @@
 /*global userPusherChannel, haml*/
 
 function exists(varRef) {
-  'use strict';
   var retVal = ((typeof(varRef) !== 'undefined') && varRef);
   return retVal;
 }
 
 $(function() {
-  'use strict';
   if (!exists(chatBeaconBootstrap)) {
     return;
   }
