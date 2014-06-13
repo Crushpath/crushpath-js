@@ -2,16 +2,18 @@
 // vanilla jQuery for minimal dependency because shared between apps
 
 /*global $, jQuery*/
-/*global chatBeaconBootstrap, haml*/
+/*global chatBeaconBootstrap, window*/
 /*global userPusherChannel, haml*/
 
 function exists(varRef) {
+  'use strict';
   var retVal = ((typeof(varRef) !== 'undefined') && varRef);
   return retVal;
 }
 
 $(function() {
-  if (!exists(chatBeaconBootstrap)) {
+  'use strict';
+  if (!exists(window.chatBeaconBootstrap)) {
     return;
   }
 
@@ -46,13 +48,13 @@ $(function() {
     });
 
     if (!chatFrameLoaded) {
-      $(".js-chat-iframe-container iframe").attr('src',chatBeaconBootstrap.streamAppURL)[0].onload = function() {
+      $(".js-chat-iframe-container iframe").attr('src',window.chatBeaconBootstrap.streamAppURL)[0].onload = function() {
         chatFrameLoaded = true;
       };
     }
   }
 
-  if (exists(chatBeaconBootstrap.streamAppUnreadURL)){
+  if (exists(window.chatBeaconBootstrap.streamAppUnreadURL)){
     $.getJSON(chatBeaconBootstrap.streamAppUnreadURL, function (result) {
       //response data are now in the result variable
       unreadCount = result.count;
@@ -60,8 +62,8 @@ $(function() {
     }).error(function(xhrObj) {
       xhrObj.silenceError = true;
     });
-  } else if (exists(chatBeaconBootstrap.unreadReplies)) {
-    unreadCount = chatBeaconBootstrap.unreadReplies.length;
+  } else if (exists(window.chatBeaconBootstrap.unreadReplies)) {
+    unreadCount = window.chatBeaconBootstrap.unreadReplies.length;
     updateUnreadBadge();
   }
 
@@ -72,7 +74,7 @@ $(function() {
   function attemptBind() {
     bindAttempts += 1;
     try {
-      userPusherChannel.bind("unread_questions_update", function(data) {
+      window.userPusherChannel.bind("unread_questions_update", function(data) {
         try {
           unreadCount = data.object.items.length;
           updateUnreadBadge();
