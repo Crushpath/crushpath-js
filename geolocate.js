@@ -27,7 +27,7 @@
       clearCoordinates();
       this.locationCanceled = true;
       settings.onCancel.call(this);
-    }
+    };
 
     var setLocation = function(position) {
       if (this.locationCanceled) {
