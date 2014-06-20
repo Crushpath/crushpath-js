@@ -99,7 +99,7 @@
 
         settings.onComplete.call(this);
       });
-    }
+    };
 
     function setCoordinates(pos) {
       $(settings.latituteInput).val(pos.lat());
@@ -149,7 +149,7 @@
         settings.onCancel.call(this);
       },
       locationCanceled: this.locationCanceled
-    }
-  }
+    };
+  };
 
 }(jQuery));
