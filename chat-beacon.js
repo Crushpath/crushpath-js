@@ -13,6 +13,7 @@ function exists(varRef) {
 
 $(function() {
   'use strict';
+
   if (!exists(window.chatBeaconBootstrap)) {
     return;
   }
@@ -60,8 +61,8 @@ $(function() {
       unreadCount = result.count;
       updateUnreadBadge();
     }).error(function(xhrObj) {
-      xhrObj.silenceError = true;
-    });
+        xhrObj.silenceError = true;
+      });
   } else if (exists(window.chatBeaconBootstrap.unreadReplies)) {
     unreadCount = window.chatBeaconBootstrap.unreadReplies.length;
     updateUnreadBadge();
@@ -119,6 +120,11 @@ $(function() {
       $(".js-chat-iframe-container").animate({
         height: e.data.match(/[0-9]+/) + "px"
       },125);
+    }
+
+    if(e.data === 'unread_questions_update') {
+      unreadCount--;
+      updateUnreadBadge();
     }
 
   }, false);
