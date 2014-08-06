@@ -58,7 +58,7 @@ $(function() {
   if (exists(window.chatBeaconBootstrap.streamAppUnreadURL)){
     $.getJSON(chatBeaconBootstrap.streamAppUnreadURL, function (result) {
       //response data are now in the result variable
-      unreadCount = result.count;
+      unreadCount = result.total_count || result.count;
       updateUnreadBadge();
     }).error(function(xhrObj) {
         xhrObj.silenceError = true;
