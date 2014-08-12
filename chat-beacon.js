@@ -13,7 +13,6 @@ function exists(varRef) {
 
 $(function() {
   'use strict';
-
   if (!exists(window.chatBeaconBootstrap)) {
     return;
   }
@@ -77,7 +76,12 @@ $(function() {
     try {
       window.userPusherChannel.bind("unread_questions_update", function(data) {
         try {
-          unreadCount = data.object.items.length;
+          unreadCount = 0;
+          if (typeof(data.object.total_count) !== 'undefined') {
+            unreadCount = data.object.total_count;
+          } else if (typeof(data.object.items) !== 'undefined') {
+            unreadCount = data.object.items.length;
+          }
           updateUnreadBadge();
         } catch(e) { }
       });
@@ -120,11 +124,6 @@ $(function() {
       $(".js-chat-iframe-container").animate({
         height: e.data.match(/[0-9]+/) + "px"
       },125);
-    }
-
-    if(e.data === 'unread_questions_update') {
-      unreadCount--;
-      updateUnreadBadge();
     }
 
   }, false);
