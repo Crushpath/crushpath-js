@@ -57,7 +57,7 @@ $(function() {
   if (exists(window.chatBeaconBootstrap.streamAppUnreadURL)){
     $.getJSON(chatBeaconBootstrap.streamAppUnreadURL, function (result) {
       //response data are now in the result variable
-      unreadCount = result.total_count || result.count;
+      unreadCount = result.total_count;
       updateUnreadBadge();
     }).error(function(xhrObj) {
         xhrObj.silenceError = true;
@@ -76,12 +76,7 @@ $(function() {
     try {
       window.userPusherChannel.bind("unread_questions_update", function(data) {
         try {
-          unreadCount = 0;
-          if (typeof(data.object.total_count) !== 'undefined') {
-            unreadCount = data.object.total_count;
-          } else if (typeof(data.object.items) !== 'undefined') {
-            unreadCount = data.object.items.length;
-          }
+          unreadCount = data.object.total_count;
           updateUnreadBadge();
         } catch(e) { }
       });
