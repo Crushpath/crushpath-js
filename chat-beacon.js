@@ -11,7 +11,7 @@ function exists(varRef) {
   return retVal;
 }
 
-$(function() {
+$(document).ready(function() {
   'use strict';
   if (!exists(window.chatBeaconBootstrap)) {
     return;
