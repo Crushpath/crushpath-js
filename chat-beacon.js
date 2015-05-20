@@ -100,7 +100,8 @@ $(document).ready(function() {
 
   ////////
   // click handler on chat bubble
-  $(".js-show-chat").click(function() {
+  $(".js-show-chat").click(function(e) {
+    e.preventDefault();
     if (chatFrameOpened) {
       closeChatFrame();
     } else {
