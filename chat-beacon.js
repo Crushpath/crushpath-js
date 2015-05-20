@@ -39,6 +39,13 @@ $(document).ready(function() {
     });
   }
 
+  function preloadChatFrame() {
+    $(".js-chat-iframe-container iframe").attr('src',window.chatBeaconBootstrap.streamAppURL);
+    chatFrameLoaded = true;
+  }
+
+  preloadChatFrame();
+
 ////////
 // Open dropdown
   function openChatFrame() {
