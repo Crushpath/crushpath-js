@@ -108,6 +108,12 @@ $(document).ready(function() {
       return;
     }
 
+    if (typeof e.data.totalUnreadMessages !== 'undefined') {
+      unreadCount = e.data.totalUnreadMessages;
+      updateUnreadBadge();
+      return;
+    }
+
     // close frame
     if (e.data === 'closeChatDropdown' && chatFrameOpened) {
       closeChatFrame();
