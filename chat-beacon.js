@@ -121,7 +121,7 @@ $(document).ready(function() {
     }
 
     // adjust height with message like changeHeight:123
-    if (e.data.match(/^changeHeight/)) {
+    if (typeof e.data.match === 'function' && e.data.match(/^changeHeight/)) {
       $(".js-chat-iframe-container").animate({
         height: e.data.match(/[0-9]+/) + "px"
       },125);
