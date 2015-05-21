@@ -20,6 +20,7 @@ $(document).ready(function() {
   var chatFrameLoaded = false;
   var chatFrameOpened = false;
   var unreadCount = 0;
+  var chatFrameURL = window.chatBeaconBootstrap.streamAppURL + '?skipRedirect=1';
 
   ////////
   // Update counter badge in DOM
@@ -40,7 +41,7 @@ $(document).ready(function() {
   }
 
   function preloadChatFrame() {
-    $(".js-chat-iframe-container iframe").attr('src',window.chatBeaconBootstrap.streamAppURL);
+    $(".js-chat-iframe-container iframe").attr('src', chatFrameURL);
     chatFrameLoaded = true;
   }
 
@@ -55,7 +56,7 @@ $(document).ready(function() {
     });
 
     if (!chatFrameLoaded) {
-      $(".js-chat-iframe-container iframe").attr('src',window.chatBeaconBootstrap.streamAppURL)[0].onload = function() {
+      $(".js-chat-iframe-container iframe").attr('src', chatFrameURL)[0].onload = function() {
         chatFrameLoaded = true;
       };
     }
