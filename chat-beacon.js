@@ -44,9 +44,9 @@ $(document).ready(function() {
     });
   }
 
-  function popupChatFrame() {
+  function popupChatFrame(payload) {
     chatFramePopupWindow = window.open(
-      window.chatBeaconBootstrap.streamAppURL+"?popup=1",
+      payload.currentUrl+"?popup=1",
       'Chat',
       'menubar=no,location=no,resizable=no,scrollbars=no,status=no, width=' + chatFramePopupWindowOpts.width + ', height=' + chatFramePopupWindowOpts.height + ', top=' + chatFramePopupWindowOpts.top + ', left=' + chatFramePopupWindowOpts.left);
   }
@@ -141,8 +141,8 @@ $(document).ready(function() {
     }
 
     // popup frame
-    if (e.data === "popupChatWindow" && chatFrameOpened) {
-      popupChatFrame();
+    if (e.data.event && e.data.payload && e.data.event === "popupChatWindow" && chatFrameOpened) {
+      popupChatFrame(e.data.payload);
       return;
     }
 
