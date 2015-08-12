@@ -21,6 +21,10 @@ $(document).ready(function() {
   var chatFrameOpened = false;
   var unreadCount = 0;
   var chatFrameURL = window.chatBeaconBootstrap.streamAppURL + '?skipRedirect=1';
+  var chatFramePopupWindow;
+  var chatFramePopupWindowOpts = {width: 800, height: 640};
+  chatFramePopupWindowOpts.left = (screen.width / 2) - (chatFramePopupWindowOpts.width / 2);
+  chatFramePopupWindowOpts.top = (screen.height / 2) - (chatFramePopupWindowOpts.height / 2);
 
   ////////
   // Update counter badge in DOM
@@ -38,6 +42,13 @@ $(document).ready(function() {
     $(".js-chat-iframe-container").fadeOut(125, function() {
       chatFrameOpened = false;
     });
+  }
+
+  function popupChatFrame() {
+    chatFramePopupWindow = window.open(
+      window.chatBeaconBootstrap.streamAppURL+"?popup=1",
+      'Chat',
+      'menubar=no,location=no,resizable=no,scrollbars=no,status=no, width=' + chatFramePopupWindowOpts.width + ', height=' + chatFramePopupWindowOpts.height + ', top=' + chatFramePopupWindowOpts.top + ', left=' + chatFramePopupWindowOpts.left);
   }
 
   function preloadChatFrame() {
@@ -126,6 +137,12 @@ $(document).ready(function() {
     // close frame
     if (e.data === 'closeChatDropdown' && chatFrameOpened) {
       closeChatFrame();
+      return;
+    }
+
+    // popup frame
+    if (e.data === "popupChatWindow" && chatFrameOpened) {
+      popupChatFrame();
       return;
     }
 
