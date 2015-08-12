@@ -22,9 +22,9 @@ $(document).ready(function() {
   var unreadCount = 0;
   var chatFrameURL = window.chatBeaconBootstrap.streamAppURL + '?skipRedirect=1';
   var chatFramePopupWindow;
-  var chatFramePopupWindowOpts = {width: 800, height: 640};
-  chatFramePopupWindowOpts.left = (screen.width / 2) - (chatFramePopupWindowOpts.width / 2);
-  chatFramePopupWindowOpts.top = (screen.height / 2) - (chatFramePopupWindowOpts.height / 2);
+  var chatFramePopupWindowOpts = {width: 280, height: window.screen.height/2};
+  chatFramePopupWindowOpts.left = window.screen.width - chatFramePopupWindowOpts.width;
+  chatFramePopupWindowOpts.top = 0;
 
   ////////
   // Update counter badge in DOM
@@ -49,6 +49,7 @@ $(document).ready(function() {
       payload.currentUrl+"?popup=1",
       'Chat',
       'menubar=no,location=no,resizable=no,scrollbars=no,status=no, width=' + chatFramePopupWindowOpts.width + ', height=' + chatFramePopupWindowOpts.height + ', top=' + chatFramePopupWindowOpts.top + ', left=' + chatFramePopupWindowOpts.left);
+      closeChatFrame();
   }
 
   function preloadChatFrame() {
