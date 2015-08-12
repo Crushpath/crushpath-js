@@ -20,7 +20,10 @@ $(document).ready(function() {
   var chatFrameLoaded = false;
   var chatFrameOpened = false;
   var unreadCount = 0;
-  var chatFrameURL = window.chatBeaconBootstrap.streamAppURL + '?skipRedirect=1';
+  var chatFramePopupWindow;
+  var chatFramePopupWindowOpts = {width: 800, height: 640};
+  chatFramePopupWindowOpts.left = (screen.width / 2) - (chatFramePopupWindowOpts.width / 2);
+  chatFramePopupWindowOpts.top = (screen.height / 2) - (chatFramePopupWindowOpts.height / 2);
 
   ////////
   // Update counter badge in DOM
@@ -40,8 +43,15 @@ $(document).ready(function() {
     });
   }
 
+  function popupChatFrame() {
+    chatFramePopupWindow = window.open(
+      window.chatBeaconBootstrap.streamAppURL+"?popup=1",
+      'Chat',
+      'menubar=no,location=no,resizable=no,scrollbars=no,status=no, width=' + chatFramePopupWindowOpts.width + ', height=' + chatFramePopupWindowOpts.height + ', top=' + chatFramePopupWindowOpts.top + ', left=' + chatFramePopupWindowOpts.left);
+  }
+
   function preloadChatFrame() {
-    $(".js-chat-iframe-container iframe").attr('src', chatFrameURL);
+    $(".js-chat-iframe-container iframe").attr('src',window.chatBeaconBootstrap.streamAppURL);
     chatFrameLoaded = true;
   }
 
@@ -56,7 +66,7 @@ $(document).ready(function() {
     });
 
     if (!chatFrameLoaded) {
-      $(".js-chat-iframe-container iframe").attr('src', chatFrameURL)[0].onload = function() {
+      $(".js-chat-iframe-container iframe").attr('src',window.chatBeaconBootstrap.streamAppURL)[0].onload = function() {
         chatFrameLoaded = true;
       };
     }
@@ -126,6 +136,12 @@ $(document).ready(function() {
     // close frame
     if (e.data === 'closeChatDropdown' && chatFrameOpened) {
       closeChatFrame();
+      return;
+    }
+
+    // popup frame
+    if (e.data === "popupChatWindow" && chatFrameOpened) {
+      popupChatFrame();
       return;
     }
 
